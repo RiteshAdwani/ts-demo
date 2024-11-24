@@ -1,11 +1,22 @@
 import type { Route, RouteMatch } from "../types";
 
-export function findMatchingRoute(
+// export function findMatchingRoute(
+//   path: string,
+//   routes: readonly Route<any, any, any>[],
+// ): Route<any, any, any> | undefined {
+//   const pathname = path.split("?")[0] ;
+//   return routes.find((route) => matchRoute(pathname, route.path));
+// }
+export function findMatchingRoute<
+  TPath extends string,
+  TSearchParams extends Record<string, unknown>,
+  TRouteData
+>(
   path: string,
-  routes: readonly Route<any, any, any>[],
-): Route<any, any, any> | undefined {
-  console.log({path, routes});
-  const pathname = path.split("?")[0] ;
+  routes: readonly Route<TPath, TSearchParams, TRouteData>[]
+): Route<TPath, TSearchParams, TRouteData> | undefined {
+  const pathname = path.split("?")[0];
+
   return routes.find((route) => matchRoute(pathname, route.path));
 }
 

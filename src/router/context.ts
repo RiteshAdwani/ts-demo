@@ -1,5 +1,8 @@
 import { createContext } from "react";
-import type { RouterContextType } from "./types";
-import { InferredPaths } from "../routes";
+import type { InferredPaths, RouterContextType, SearchParamsForPath } from "./types";
 
-export const RouterContext = createContext<RouterContextType<InferredPaths> | null>(null);
+// Make sure you're passing a valid default value (e.g., `null` or a default object).
+export const RouterContext = createContext<RouterContextType<InferredPaths, SearchParamsForPath<InferredPaths>> | null>(null);
+
+
+

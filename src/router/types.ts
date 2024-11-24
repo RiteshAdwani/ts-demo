@@ -1,5 +1,5 @@
 import { ComponentType } from "react";
-import { InferredPaths, InferredSearchParams } from "../routes";
+import {  routes } from "../routes";
 
 // ============== Search Params ==============
 export type SearchParams<T> = {
@@ -17,7 +17,7 @@ export type RouteParams<TPath extends string> =
 // ============== Route ==============
 export type Route<
   TPath extends string = string,
-  TSearch extends Record<string, unknown> = Record<string, never>,
+  TSearch = unknown,
   TLoaderData = unknown
 > = {
   path: TPath;
@@ -65,14 +65,19 @@ export type LinkProps<
 };
 
 // ============== Router context ==============
-export type RouterContextType<TPath extends InferredPaths, TSearchParams extends InferredSearchParams> = {
+export type RouterContextType<
+TPath extends InferredPaths,
+TSearchParams = SearchParamsForPath<TPath>, 
+TRouteData = InferredRouteData> = {
   state: RouterState;
   navigate: (path: string, options?: NavigateOptions) => Promise<RouterState>;
   back: () => RouterState;
   forward: () => RouterState;
-  getCurrentRoute: () => Route<TPath, TSearchParams, any> | undefined;
+  getCurrentRoute: () => Route<TPath,TSearchParams, TRouteData>;
+  getCurrentState: () => RouterState;
   isActive: (path: string) => boolean;
 };
+
 
 // Helper type to extract route paths
 export type RoutePaths<T extends readonly Route<any, any, any>[]> =
@@ -87,23 +92,29 @@ export type RouteMatch<T extends Route<any, any, any>> = {
   data?: T extends Route<any, any, infer D> ? D : never;
 };
 
-export type ExtractRouteData<T extends Route | undefined> = T extends Route
-  ? T extends { loader: (...args: any[]) => Promise<infer U> | infer U }
-    ? U
-    : never
-  : never;
 
-export type ExtractSearchParams<T extends Route | undefined> = T extends Route
-  ? T extends { searchParams: infer U }
-    ? U
-    : Record<string, never>
-  : Record<string, never>;
 
-export type ExtractParams<T extends Route | undefined> = T extends Route
-  ? T extends { path: infer P extends string }
-    ? RouteParams<P>
-    : never
-  : Record<string, never>;
+// export type ExtractRouteData<T extends Route> = T extends Route
+//   ? T extends { loader: (...args: any[]) => Promise<infer U> | infer U }
+//     ? U
+//     : never
+//   : never;
+
+export type RouteConfig = (typeof routes)[number];
+export type InferredPaths = typeof routes[number]['path'];
+// export type SearchParamsForPath<Path extends string> = Extract<RouteConfig, { path: Path }>["searchParams"];
+
+export type SearchParamsForPath<Path extends InferredPaths> = Extract< RouteConfig, { path: Path  } > extends { searchParams: infer Params }   ? Params  :undefined; 
+
+
+// // Usage Example for inferring searchParams types
+export type UsersSearchParams = SearchParamsForPath<"/users">;
+export type AboutSearchParams = SearchParamsForPath<"/about">;
+
+
+
+
+export type InferredRouteData = RouteConfig extends { loader: (...args: any[]) => Promise<infer U> | infer U } ? U : never;
 
 
   // =================

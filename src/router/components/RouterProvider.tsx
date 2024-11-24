@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import type { Route, RouterContextType, RouterState } from "../types";
+import type { InferredPaths, Route, RouterContextType, RouterState, SearchParamsForPath } from "../types";
 import { RouterContext } from "../context";
 import { Router } from "../core/router";
 
@@ -26,7 +26,7 @@ export function RouterProvider<
     return () => window.removeEventListener("popstate", handlePopState);
   }, [router]);
 
-  const contextValue: RouterContextType = {
+  const contextValue: RouterContextType<InferredPaths,SearchParamsForPath<InferredPaths>> = {
     state,
     navigate: async (path, options) => {
       const newState = await router.navigate(path, options);
@@ -44,6 +44,7 @@ export function RouterProvider<
       return newState;
     },
     getCurrentRoute: () => router.getCurrentRoute(),
+    getCurrentState: () => router.getCurrentState(),
     isActive: (path) => router.isActive(path),
   };
 

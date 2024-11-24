@@ -1,4 +1,4 @@
-import { NavigateOptions, Route, RouterOptions, RouterState } from "../types";
+import { InferredPaths, NavigateOptions, Route, RouterOptions, RouterState, SearchParamsForPath } from "../types";
 import { findMatchingRoute, extractRouteMatch } from "./utils";
 
 export class Router<TRoutes extends readonly Route<any, any, any>[]> {
@@ -14,7 +14,7 @@ export class Router<TRoutes extends readonly Route<any, any, any>[]> {
     const match = matchedRoute
       ? extractRouteMatch(initialPath, matchedRoute)
       : { params: {}, searchParams: {} };
-    console.log({ match });
+    // console.log({ match });
 
     // Initialize with parsed params from URL
     const initialState: RouterState = {
@@ -99,7 +99,15 @@ export class Router<TRoutes extends readonly Route<any, any, any>[]> {
     return this.history[this.currentIndex];
   }
 
-  public getCurrentRoute(): Route<string, any, any> | undefined {
+  // public getCurrentRoute(): Route<string, Record<string,unknown>, Record<string,unknown>> | undefined {
+  //   const matchedRoute = findMatchingRoute(
+  //     this.getCurrentState().currentPath,
+  //     this.routes
+  //   );
+  //   return matchedRoute || this.routes[this.routes.length - 1];
+  // }
+
+  public getCurrentRoute(): Route<InferredPaths, SearchParamsForPath<InferredPaths>, any> {
     const matchedRoute = findMatchingRoute(
       this.getCurrentState().currentPath,
       this.routes

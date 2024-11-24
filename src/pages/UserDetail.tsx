@@ -3,7 +3,8 @@ import { User } from "../types";
 
 const UserDetail = () => {
   const { back } = useRouter();
-  const { user } = useRouteData<{ user: User }>();
+  const data = useRouteData();
+  const user = data.user;
   const params = useParams();
   console.log(params);
 

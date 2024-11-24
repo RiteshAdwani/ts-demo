@@ -4,11 +4,14 @@ import { User } from "../types";
 
 const UserList = () => {
   const { navigate } = useRouter();
-  const { users } = useRouteData<{ users: User[] }>();
+  const router = useRouter();
+  const { users } = useRouteData();
   const searchParams = useSearchParams();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
-    searchParams.sort
+    searchParams && searchParams.sort ? searchParams.sort : "asc"
   );
+
+  console.log(searchParams?.sort);
 
   const sortedUsers = [...users].sort((a, b) =>
     sortOrder === "asc"

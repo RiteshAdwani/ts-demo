@@ -1,7 +1,9 @@
+import { InferredRouteData } from '../types';
 import { useRouter } from './useRouter';
 
 // Hook to access route data
-export function useRouteData<TData = unknown>() {
-  const { state } = useRouter();
-  return state.data as TData;
+export function useRouteData() {
+  const { state, getCurrentRoute } = useRouter();
+  const route = getCurrentRoute();
+  return state.data as InferredRouteData<typeof route.path>;
 }
